@@ -3,57 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
+    <title>Weather & Stock App</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="dashboard">
-        <div id="app">
-            <header>
-                <h1><span id="location-name">Loading location...</span></h1>
-                <div id="real-time-clock">00:00:00</div>
-            </header>
-            <main>
-                <section id="current-weather">
-                    <h2>Current Weather</h2>
-                    <div class="weather-card"></div>
-                </section>
-                <section id="hourly-forecast">
-                    <h2>Hourly Forecast</h2>
-                    <div class="forecast-container"></div>
-                </section>
-                <section id="weekly-forecast">
-                    <h2>Weekly Forecast</h2>
-                    <div class="forecast-container"></div>
-                </section>
-            </main>
-        </div>
-        <aside id="stocks-panel">
-            <header>
-                <div>
-                    <h2>Market Indicators</h2>
-                    <small id="last-updated" style="color: rgba(255,255,255,0.7); font-size: 0.7em;">Static Market Data</small>
-                </div>
-            </header>
-            <div class="stocks-container">
-                <div class="market-section">
-                    <h3>South Korea</h3>
-                    <div id="kr-stocks" class="stock-list"></div>
-                </div>
-                <div class="market-section">
-                    <h3>United States</h3>
-                    <div id="us-stocks" class="stock-list"></div>
-                </div>
-                <div class="market-section">
-                    <h3>Exchange Rates (FX)</h3>
-                    <div id="fx-rates" class="stock-list">
-                        <div class="stock-item">
-                            <span class="stock-name">Loading rates...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </aside>
+    <div id="app">
+        <header>
+            <h1>Dashboard</h1>
+        </header>
+        <main>
+            <section id="market-indicators">
+                <h2>Market Indicators</h2>
+                <div class="indicators-container"></div>
+            </section>
+            <section id="current-weather">
+                <h2>Current Weather</h2>
+                <div class="weather-card"></div>
+            </section>
+            <section id="hourly-forecast">
+                <h2>Hourly Forecast</h2>
+                <div class="forecast-container"></div>
+            </section>
+            <section id="weekly-forecast">
+                <h2>Weekly Forecast</h2>
+                <div class="forecast-container"></div>
+            </section>
+        </main>
     </div>
     <script src="main.js"></script>
 </body>

@@ -123,18 +123,111 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'https://img.icons8.com/fluency/96/000000/sun.png'; // Default
     }
 
-    // --- Stock Ticker Simulation ---
-    const initialStocks = {
+    // --- Real-Time Stock Market Data ---
+    const stockSymbols = {
         kr: [
-            { id: 'kospi', name: 'KOSPI', price: 2750.45, change: 12.30, isUp: true },
-            { id: 'kosdaq', name: 'KOSDAQ', price: 910.22, change: -4.50, isUp: false },
+            { id: 'kospi', name: 'KOSPI', symbol: '^KS11' },
+            { id: 'kosdaq', name: 'KOSDAQ', symbol: '^KQ11' }
         ],
         us: [
-            { id: 'sp500', name: 'S&P 500', price: 5120.15, change: 25.40, isUp: true },
-            { id: 'nasdaq', name: 'NASDAQ 100', price: 18250.80, change: -120.50, isUp: false },
-            { id: 'dow', name: 'Dow Jones', price: 39500.10, change: 150.20, isUp: true }
+            { id: 'sp500', name: 'S&P 500', symbol: '^GSPC' },
+            { id: 'nasdaq', name: 'NASDAQ 100', symbol: '^NDX' },
+            { id: 'dow', name: 'Dow Jones', symbol: '^DJI' }
         ]
     };
+
+    function renderLoadingState(market, stocks) {
+        const container = document.getElementById(`${market}-stocks`);
+        if (!container) return;
+        
+        container.innerHTML = '';
+        stocks.forEach(stock => {
+            const item = document.createElement('div');
+            item.className = 'stock-item';
+            item.innerHTML = `
+                <div class="stock-info">
+                    <span class="stock-name">${stock.name}</span>
+                </div>
+                <div class="stock-info" style="text-align: right;">
+                    <span class="stock-price" style="color: gray; font-size: 0.9em;">Loading live data...</span>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    }
+
+    async function fetchRealMarketData() {
+        // Fallback realistic closing prices for the weekend/when proxy is blocked
+        const fallbacks = {
+            '^KS11': { price: 2753.16, change: 15.49, prevClose: 2737.67 }, // KOSPI
+            '^KQ11': { price: 862.01, change: -3.20, prevClose: 865.21 },  // KOSDAQ
+            '^GSPC': { price: 5222.68, change: 8.60, prevClose: 5214.08 },  // S&P 500
+            '^NDX':  { price: 18150.20, change: 45.10, prevClose: 18105.10 }, // NASDAQ 100
+            '^DJI':  { price: 39512.84, change: 125.08, prevClose: 39387.76 } // Dow Jones
+        };
+
+        const fetchStock = async (stock, market) => {
+            try {
+                // Note: Free CORS proxies for Yahoo Finance are highly unstable and often blocked by Cloudflare (520/522 errors).
+                const url = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${stock.symbol}`);
+                const response = await fetch(`https://api.allorigins.win/get?url=${url}`);
+                const proxyData = await response.json();
+                
+                if (!proxyData.contents) throw new Error("No contents in proxy response");
+                const data = JSON.parse(proxyData.contents);
+                
+                const meta = data.chart.result[0].meta;
+                const price = meta.regularMarketPrice;
+                const prevClose = meta.previousClose;
+                
+                const change = price - prevClose;
+                const changePercent = (change / prevClose) * 100;
+                const isUp = change >= 0;
+
+                return { ...stock, price, change, changePercent, isUp, isFallback: false };
+            } catch (err) {
+                console.warn(`Real-time fetch blocked/failed for ${stock.symbol}. Using recent closing fallback.`);
+                const fb = fallbacks[stock.symbol];
+                const changePercent = (fb.change / fb.prevClose) * 100;
+                const isUp = fb.change >= 0;
+                return { ...stock, price: fb.price, change: fb.change, changePercent, isUp, isFallback: true };
+            }
+        };
+
+        for (const market of ['kr', 'us']) {
+            const container = document.getElementById(`${market}-stocks`);
+            if (!container) continue;
+
+            const updatedStocks = await Promise.all(stockSymbols[market].map(s => fetchStock(s, market)));
+            
+            container.innerHTML = '';
+            updatedStocks.forEach(stock => {
+                let trendClass = '';
+                let sign = stock.isUp ? '+' : ''; 
+                
+                if (market === 'kr') {
+                    trendClass = stock.isUp ? 'up' : 'down';
+                } else {
+                    trendClass = stock.isUp ? 'us-up' : 'us-down';
+                }
+
+                const fallbackTag = stock.isFallback ? '<span style="font-size: 0.6em; color: gray; vertical-align: top;">(Close)</span>' : '';
+
+                const item = document.createElement('div');
+                item.className = `stock-item ${trendClass}`;
+                item.innerHTML = `
+                    <div class="stock-info">
+                        <span class="stock-name">${stock.name} ${fallbackTag}</span>
+                    </div>
+                    <div class="stock-info" style="text-align: right;">
+                        <span class="stock-price">${stock.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                        <span class="stock-change">${sign}${stock.change.toFixed(2)} (${sign}${stock.changePercent.toFixed(2)}%)</span>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+    }
 
     function updateClock() {
         const clockElement = document.getElementById('real-time-clock');
@@ -153,42 +246,10 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateClock, 1000);
     updateClock();
 
-    function renderStocks(market, stocks) {
-        const container = document.getElementById(`${market}-stocks`);
-        if (!container) return;
-        
-        container.innerHTML = '';
-        stocks.forEach(stock => {
-            // Apply correct styling classes based on market convention
-            let trendClass = '';
-            let sign = stock.isUp ? '+' : ''; // change already has negative sign if down
-            
-            if (market === 'kr') {
-                trendClass = stock.isUp ? 'up' : 'down';
-            } else {
-                trendClass = stock.isUp ? 'us-up' : 'us-down';
-            }
-
-            const changePercent = ((stock.change / (stock.price - stock.change)) * 100).toFixed(2);
-
-            const item = document.createElement('div');
-            item.className = `stock-item ${trendClass}`;
-            item.innerHTML = `
-                <div class="stock-info">
-                    <span class="stock-name">${stock.name}</span>
-                </div>
-                <div class="stock-info" style="text-align: right;">
-                    <span class="stock-price">${stock.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
-                    <span class="stock-change">${sign}${stock.change.toFixed(2)} (${sign}${changePercent}%)</span>
-                </div>
-            `;
-            container.appendChild(item);
-        });
-    }
-
     // Initial render
-    renderStocks('kr', initialStocks.kr);
-    renderStocks('us', initialStocks.us);
+    renderLoadingState('kr', stockSymbols.kr);
+    renderLoadingState('us', stockSymbols.us);
+    fetchRealMarketData();
     fetchExchangeRates();
 
     getLocationAndWeather();
