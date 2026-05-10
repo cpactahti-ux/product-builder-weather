@@ -20,7 +20,7 @@ body {
 }
 
 #app {
-    flex: 2;
+    flex: 1;
     background: white;
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
@@ -160,7 +160,7 @@ body {
         gap: 10px;
     }
     #app {
-        flex: 1.5; /* Slightly more space for weather */
+        flex: 1; /* Make it exactly 50/50 with stocks panel */
     }
     #stocks-panel {
         flex: 1;

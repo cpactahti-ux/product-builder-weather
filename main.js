@@ -112,16 +112,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getWeatherIcon(weatherCode) {
-        // Simple mapping of weather codes to icons. 
-        // You can expand this with more detailed icons.
-        if (weatherCode >= 0 && weatherCode <= 1) return 'https://img.icons8.com/office/80/000000/sun.png'; // Clear sky, Mainly clear
-        if (weatherCode >= 2 && weatherCode <= 3) return 'https://img.icons8.com/office/80/000000/partly-cloudy-day.png'; // Partly cloudy, Overcast
-        if (weatherCode >= 45 && weatherCode <= 48) return 'https://img.icons8.com/office/80/000000/fog-day.png'; // Fog
-        if (weatherCode >= 51 && weatherCode <= 67) return 'https://img.icons8.com/office/80/000000/rain.png'; // Drizzle, Rain
-        if (weatherCode >= 71 && weatherCode <= 77) return 'https://img.icons8.com/office/80/000000/snow.png'; // Snow
-        if (weatherCode >= 80 && weatherCode <= 82) return 'https://img.icons8.com/office/80/000000/rain.png'; // Rain showers
-        if (weatherCode >= 95 && weatherCode <= 99) return 'https://img.icons8.com/office/80/000000/storm.png'; // Thunderstorm
-        return 'https://img.icons8.com/office/80/000000/sun.png'; // Default
+        // Realistic 3D "Fluency" mapping of weather codes to icons from Icons8
+        if (weatherCode >= 0 && weatherCode <= 1) return 'https://img.icons8.com/fluency/96/000000/sun.png'; // Clear sky, Mainly clear
+        if (weatherCode >= 2 && weatherCode <= 3) return 'https://img.icons8.com/fluency/96/000000/partly-cloudy-day.png'; // Partly cloudy, Overcast
+        if (weatherCode >= 45 && weatherCode <= 48) return 'https://img.icons8.com/fluency/96/000000/fog-day.png'; // Fog
+        if (weatherCode >= 51 && weatherCode <= 67) return 'https://img.icons8.com/fluency/96/000000/rain.png'; // Drizzle, Rain
+        if (weatherCode >= 71 && weatherCode <= 77) return 'https://img.icons8.com/fluency/96/000000/snow.png'; // Snow
+        if (weatherCode >= 80 && weatherCode <= 82) return 'https://img.icons8.com/fluency/96/000000/torrential-rain.png'; // Rain showers
+        if (weatherCode >= 95 && weatherCode <= 99) return 'https://img.icons8.com/fluency/96/000000/storm.png'; // Thunderstorm
+        return 'https://img.icons8.com/fluency/96/000000/sun.png'; // Default
     }
 
     // --- Stock Ticker Simulation ---
