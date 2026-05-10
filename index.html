@@ -11,6 +11,7 @@
         <div id="app">
             <header>
                 <h1><span id="location-name">Loading location...</span></h1>
+                <div id="real-time-clock">00:00:00</div>
             </header>
             <main>
                 <section id="current-weather">
@@ -29,7 +30,10 @@
         </div>
         <aside id="stocks-panel">
             <header>
-                <h2>Market Indicators</h2>
+                <div>
+                    <h2>Market Indicators</h2>
+                    <small id="last-updated" style="color: rgba(255,255,255,0.7); font-size: 0.7em;">Updating...</small>
+                </div>
                 <div class="pulse"></div>
             </header>
             <div class="stocks-container">

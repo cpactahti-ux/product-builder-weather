@@ -132,10 +132,27 @@ document.addEventListener('DOMContentLoaded', () => {
         ],
         us: [
             { id: 'sp500', name: 'S&P 500', price: 5120.15, change: 25.40, isUp: true },
-            { id: 'nasdaq', name: 'NASDAQ', price: 16250.80, change: -120.50, isUp: false },
+            { id: 'nasdaq', name: 'NASDAQ 100', price: 18250.80, change: -120.50, isUp: false },
             { id: 'dow', name: 'Dow Jones', price: 39500.10, change: 150.20, isUp: true }
         ]
     };
+
+    function updateClock() {
+        const clockElement = document.getElementById('real-time-clock');
+        if (!clockElement) return;
+        
+        const now = new Date();
+        const timeString = now.toLocaleTimeString(undefined, { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit',
+            hour12: false 
+        });
+        clockElement.innerText = timeString;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
 
     function renderStocks(market, stocks) {
         const container = document.getElementById(`${market}-stocks`);
@@ -186,6 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
             stockToUpdate.isUp = stockToUpdate.change >= 0;
 
             renderStocks(market, initialStocks[market]);
+            
+            const lastUpdated = document.getElementById('last-updated');
+            if (lastUpdated) {
+                lastUpdated.innerText = `Last update: ${new Date().toLocaleTimeString()}`;
+            }
         }, 2000);
     }
 
