@@ -1,16 +1,51 @@
 
 document.addEventListener('DOMContentLoaded', () => {
-    const weatherAPI = 'https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.9780&hourly=temperature_2m,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Asia%2FSingapore';
+    async function getLocationAndWeather() {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                await fetchWeatherAndLocation(lat, lon);
+            }, async (error) => {
+                console.warn("Geolocation denied or failed, using default (Seoul).", error);
+                await fetchWeatherAndLocation(37.5665, 126.9780);
+            });
+        } else {
+            await fetchWeatherAndLocation(37.5665, 126.9780);
+        }
+    }
 
-    async function fetchWeather() {
+    async function fetchWeatherAndLocation(lat, lon) {
         try {
+            // Reverse Geocoding using Nominatim
+            const geoApi = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`;
+            const geoResponse = await fetch(geoApi);
+            const geoData = await geoResponse.json();
+            
+            const address = geoData.address || {};
+            const country = address.country || '';
+            const state = address.state || address.province || address.region || '';
+            const city = address.city || address.town || address.village || address.county || '';
+            
+            const locationParts = [country, state, city].filter(part => part !== '');
+            const locationString = locationParts.join(', ');
+            
+            const locationElement = document.getElementById('location-name');
+            if (locationElement) {
+                locationElement.innerText = locationString || "Unknown Location";
+            }
+
+            // Fetch Weather
+            const weatherAPI = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weathercode&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`;
             const response = await fetch(weatherAPI);
             const data = await response.json();
             renderCurrentWeather(data);
             renderHourlyForecast(data);
             renderWeeklyForecast(data);
         } catch (error) {
-            console.error('Error fetching weather data:', error);
+            console.error('Error fetching data:', error);
+            const locationElement = document.getElementById('location-name');
+            if (locationElement) locationElement.innerText = "Error loading location";
         }
     }
 
@@ -89,5 +124,5 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'https://img.icons8.com/office/80/000000/sun.png'; // Default
     }
 
-    fetchWeather();
+    getLocationAndWeather();
 });
