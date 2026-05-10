@@ -186,71 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function simulateMarketUpdates() {
-        // Randomly update a stock price slightly every 2 seconds
-        setInterval(() => {
-            const market = Math.random() > 0.5 ? 'kr' : 'us';
-            const stocks = initialStocks[market];
-            const stockToUpdate = stocks[Math.floor(Math.random() * stocks.length)];
-            
-            // Random fluctuation between -0.2% and +0.2%
-            const fluctuationPercent = (Math.random() * 0.4 - 0.2) / 100;
-            const diff = stockToUpdate.price * fluctuationPercent;
-            
-            stockToUpdate.price += diff;
-            stockToUpdate.change += diff;
-            stockToUpdate.isUp = stockToUpdate.change >= 0;
-
-            renderStocks(market, initialStocks[market]);
-            
-            const lastUpdated = document.getElementById('last-updated');
-            if (lastUpdated) {
-                lastUpdated.innerText = `Last update: ${new Date().toLocaleTimeString()}`;
-            }
-        }, 2000);
-    }
-
-    // --- Exchange Rates (Real-Time API) ---
-    async function fetchExchangeRates() {
-        const fxContainer = document.getElementById('fx-rates');
-        if (!fxContainer) return;
-
-        try {
-            const response = await fetch('https://open.er-api.com/v6/latest/USD');
-            const data = await response.json();
-            
-            if (data.result === "success") {
-                const krw = data.rates.KRW;
-                const jpy = data.rates.JPY;
-                const eur = data.rates.EUR;
-                
-                fxContainer.innerHTML = `
-                    <div class="stock-item">
-                        <div class="stock-info"><span class="stock-name">USD / KRW</span></div>
-                        <div class="stock-info" style="text-align: right;"><span class="stock-price">₩${krw.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></div>
-                    </div>
-                    <div class="stock-item">
-                        <div class="stock-info"><span class="stock-name">USD / JPY</span></div>
-                        <div class="stock-info" style="text-align: right;"><span class="stock-price">¥${jpy.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></div>
-                    </div>
-                    <div class="stock-item">
-                        <div class="stock-info"><span class="stock-name">EUR / USD</span></div>
-                        <div class="stock-info" style="text-align: right;"><span class="stock-price">$${eur.toLocaleString(undefined, {minimumFractionDigits: 4, maximumFractionDigits: 4})}</span></div>
-                    </div>
-                `;
-            } else {
-                fxContainer.innerHTML = '<div class="stock-item">Error loading rates</div>';
-            }
-        } catch (error) {
-            console.error('Error fetching FX rates:', error);
-            fxContainer.innerHTML = '<div class="stock-item">Error loading rates</div>';
-        }
-    }
-
     // Initial render
     renderStocks('kr', initialStocks.kr);
     renderStocks('us', initialStocks.us);
-    simulateMarketUpdates();
     fetchExchangeRates();
 
     getLocationAndWeather();
