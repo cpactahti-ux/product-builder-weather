@@ -1,14 +1,31 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+    <div id="app">
+        <header>
+            <h1>Weather in Your City</h1>
+        </header>
+        <main>
+            <section id="current-weather">
+                <h2>Current Weather</h2>
+                <div class="weather-card"></div>
+            </section>
+            <section id="hourly-forecast">
+                <h2>Hourly Forecast</h2>
+                <div class="forecast-container"></div>
+            </section>
+            <section id="weekly-forecast">
+                <h2>Weekly Forecast</h2>
+                <div class="forecast-container"></div>
+            </section>
+        </main>
+    </div>
+    <script src="main.js"></script>
 </body>
 </html>
