@@ -124,5 +124,75 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'https://img.icons8.com/office/80/000000/sun.png'; // Default
     }
 
+    // --- Stock Ticker Simulation ---
+    const initialStocks = {
+        kr: [
+            { id: 'kospi', name: 'KOSPI', price: 2750.45, change: 12.30, isUp: true },
+            { id: 'kosdaq', name: 'KOSDAQ', price: 910.22, change: -4.50, isUp: false },
+        ],
+        us: [
+            { id: 'sp500', name: 'S&P 500', price: 5120.15, change: 25.40, isUp: true },
+            { id: 'nasdaq', name: 'NASDAQ', price: 16250.80, change: -120.50, isUp: false },
+            { id: 'dow', name: 'Dow Jones', price: 39500.10, change: 150.20, isUp: true }
+        ]
+    };
+
+    function renderStocks(market, stocks) {
+        const container = document.getElementById(`${market}-stocks`);
+        if (!container) return;
+        
+        container.innerHTML = '';
+        stocks.forEach(stock => {
+            // Apply correct styling classes based on market convention
+            let trendClass = '';
+            let sign = stock.isUp ? '+' : ''; // change already has negative sign if down
+            
+            if (market === 'kr') {
+                trendClass = stock.isUp ? 'up' : 'down';
+            } else {
+                trendClass = stock.isUp ? 'us-up' : 'us-down';
+            }
+
+            const changePercent = ((stock.change / (stock.price - stock.change)) * 100).toFixed(2);
+
+            const item = document.createElement('div');
+            item.className = `stock-item ${trendClass}`;
+            item.innerHTML = `
+                <div class="stock-info">
+                    <span class="stock-name">${stock.name}</span>
+                </div>
+                <div class="stock-info" style="text-align: right;">
+                    <span class="stock-price">${stock.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    <span class="stock-change">${sign}${stock.change.toFixed(2)} (${sign}${changePercent}%)</span>
+                </div>
+            `;
+            container.appendChild(item);
+        });
+    }
+
+    function simulateMarketUpdates() {
+        // Randomly update a stock price slightly every 2 seconds
+        setInterval(() => {
+            const market = Math.random() > 0.5 ? 'kr' : 'us';
+            const stocks = initialStocks[market];
+            const stockToUpdate = stocks[Math.floor(Math.random() * stocks.length)];
+            
+            // Random fluctuation between -0.2% and +0.2%
+            const fluctuationPercent = (Math.random() * 0.4 - 0.2) / 100;
+            const diff = stockToUpdate.price * fluctuationPercent;
+            
+            stockToUpdate.price += diff;
+            stockToUpdate.change += diff;
+            stockToUpdate.isUp = stockToUpdate.change >= 0;
+
+            renderStocks(market, initialStocks[market]);
+        }, 2000);
+    }
+
+    // Initial render
+    renderStocks('kr', initialStocks.kr);
+    renderStocks('us', initialStocks.us);
+    simulateMarketUpdates();
+
     getLocationAndWeather();
 });

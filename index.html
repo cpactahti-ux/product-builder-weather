@@ -7,24 +7,42 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
-        <header>
-            <h1><span id="location-name">Loading location...</span></h1>
-        </header>
-        <main>
-            <section id="current-weather">
-                <h2>Current Weather</h2>
-                <div class="weather-card"></div>
-            </section>
-            <section id="hourly-forecast">
-                <h2>Hourly Forecast</h2>
-                <div class="forecast-container"></div>
-            </section>
-            <section id="weekly-forecast">
-                <h2>Weekly Forecast</h2>
-                <div class="forecast-container"></div>
-            </section>
-        </main>
+    <div class="dashboard">
+        <div id="app">
+            <header>
+                <h1><span id="location-name">Loading location...</span></h1>
+            </header>
+            <main>
+                <section id="current-weather">
+                    <h2>Current Weather</h2>
+                    <div class="weather-card"></div>
+                </section>
+                <section id="hourly-forecast">
+                    <h2>Hourly Forecast</h2>
+                    <div class="forecast-container"></div>
+                </section>
+                <section id="weekly-forecast">
+                    <h2>Weekly Forecast</h2>
+                    <div class="forecast-container"></div>
+                </section>
+            </main>
+        </div>
+        <aside id="stocks-panel">
+            <header>
+                <h2>Market Indicators</h2>
+                <div class="pulse"></div>
+            </header>
+            <div class="stocks-container">
+                <div class="market-section">
+                    <h3>South Korea</h3>
+                    <div id="kr-stocks" class="stock-list"></div>
+                </div>
+                <div class="market-section">
+                    <h3>United States</h3>
+                    <div id="us-stocks" class="stock-list"></div>
+                </div>
+            </div>
+        </aside>
     </div>
     <script src="main.js"></script>
 </body>

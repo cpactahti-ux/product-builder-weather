@@ -11,13 +11,150 @@ body {
     min-height: 100vh;
 }
 
-#app {
+.dashboard {
+    display: flex;
+    gap: 20px;
     width: 100%;
-    max-width: 800px;
+    max-width: 1200px;
+    align-items: flex-start;
+}
+
+#app {
+    flex: 2;
     background: white;
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     overflow: hidden;
+}
+
+#stocks-panel {
+    flex: 1;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#stocks-panel header {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#stocks-panel header h2 {
+    color: white;
+    border: none;
+    margin: 0;
+    padding: 0;
+    font-size: 1.2em;
+}
+
+.pulse {
+    width: 10px;
+    height: 10px;
+    background-color: #00ff88;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+}
+
+.stocks-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.market-section h3 {
+    margin: 0 0 15px 0;
+    font-size: 1em;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stock-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stock-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid transparent;
+    transition: background-color 0.3s;
+}
+
+.stock-item:hover {
+    background: #eef1f5;
+}
+
+.stock-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stock-name {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.stock-price {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.stock-change {
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.up {
+    border-left-color: #ff3b30; /* Red in Korea means UP */
+}
+.up .stock-price, .up .stock-change {
+    color: #ff3b30;
+}
+
+.down {
+    border-left-color: #007aff; /* Blue in Korea means DOWN */
+}
+.down .stock-price, .down .stock-change {
+    color: #007aff;
+}
+
+.us-up {
+    border-left-color: #34c759; /* Green in US means UP */
+}
+.us-up .stock-price, .us-up .stock-change {
+    color: #34c759;
+}
+
+.us-down {
+    border-left-color: #ff3b30; /* Red in US means DOWN */
+}
+.us-down .stock-price, .us-down .stock-change {
+    color: #ff3b30;
+}
+
+@media (max-width: 900px) {
+    .dashboard {
+        flex-direction: column;
+    }
 }
 
 header {
